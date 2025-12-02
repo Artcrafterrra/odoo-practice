@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Main Menu -->
+    <menuitem
+        id="menu_practice_root"
+        name="Practice"
+        sequence="100"
+    />
+
+    <!-- Sub Menu -->
+    <menuitem
+        id="menu_practice_tasks"
+        name="Tasks"
+        parent="menu_practice_root"
+        action="action_practice_task"
+        sequence="10"
+    />
+
+</odoo>
