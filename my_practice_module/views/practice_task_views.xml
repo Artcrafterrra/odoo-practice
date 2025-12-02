@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="view_practice_task_tree" model="ir.ui.view">
+        <field name="name">practice.task.tree</field>
+        <field name="model">practice.task</field>
+        <field name="arch" type="xml">
+            <tree string="Practice Tasks">
+                <field name="name"/>
+                <field name="priority" widget="priority"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state == 'in_progress'" decoration-warning="state == 'draft'" decoration-danger="state == 'cancelled'"/>
+                <field name="deadline"/>
+                <field name="assigned_user_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_practice_task_form" model="ir.ui.view">
+        <field name="name">practice.task.form</field>
+        <field name="model">practice.task</field>
+        <field name="arch" type="xml">
+            <form string="Practice Task">
+                <header>
+                    <button name="action_start" string="Start" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Mark Done" type="object" class="btn-success" invisible="state not in ('draft', 'in_progress')"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state not in ('done', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="deadline"/>
+                        </group>
+                        <group>
+                            <field name="assigned_user_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Enter task description..."/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_practice_task_search" model="ir.ui.view">
+        <field name="name">practice.task.search</field>
+        <field name="model">practice.task</field>
+        <field name="arch" type="xml">
+            <search string="Search Tasks">
+                <field name="name"/>
+                <field name="assigned_user_id"/>
+                <filter string="My Tasks" name="my_tasks" domain="[('assigned_user_id', '=', uid)]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
+                    <filter string="Assigned To" name="group_by_user" context="{'group_by': 'assigned_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_practice_task" model="ir.actions.act_window">
+        <field name="name">Practice Tasks</field>
+        <field name="res_model">practice.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_practice_task_search"/>
+        <field name="context">{'search_default_my_tasks': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first practice task!
+            </p>
+            <p>
+                Practice tasks help you learn Odoo development by working with models, views, and actions.
+            </p>
+        </field>
+    </record>
+
+</odoo>
